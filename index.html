@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Amenities Finder</title>
+    <!-- Combined CSS directly in HTML for easier distribution -->
+    <style>
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .radius-info {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .results-container {
+            width: 90%;
+            max-width: 900px;
+            margin-top: 20px;
+        }
+
+        .amenity-card {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+
+        .amenity-card h2 {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .amenities-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .amenities-list li {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .star {
+            color: #ffc107;
+            margin-right: 5px;
+            font-size: 1rem;
+        }
+
+        .report-container {
+            width: 90%;
+            max-width: 900px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .report-container h2 {
+            color: #007bff;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            input[type="text"], button[type="submit"], .results-container, .report-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Find the nearest amenities.</h1>
+    <form method="POST">
+        <input type="text" name="address" placeholder="Enter US address" required>
+        <button type="submit">Search</button>
+    </form>
+    <p class="radius-info">In a 10 miles radius</p>
+
+    <div class="results-container">
+        {% if report %}
+            {% for category_name, amenities_list in amenities.items() %}
+                <div class="amenity-card">
+                    <h2>{{ category_name }}</h2>
+                    <ul class="amenities-list">
+                        {% for amenity in amenities_list %}
+                            <li>
+                                <strong>{{ amenity.name }}</strong> - {{ amenity.distance|round(2) }} miles
+                                <div class="rating">
+                                    {% for i in range(amenity.rating|int) %}
+                                        <span class="star">&#9733;</span>
+                                    {% endfor %}
+                                    <span>{{ amenity.rating }}</span>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+
+            <div class="report-container">
+                <h2>Amenities Report:</h2>
+                <p>{{ report | safe }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
